@@ -223,3 +223,4 @@ tags
 # End of https://www.toptal.com/developers/gitignore/api/git,macos,node,visualstudiocode,vim,linux
 
 .gitignore
+.prettierrc
