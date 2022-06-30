@@ -1,8 +1,16 @@
 const gnbSearch = document.querySelector('.gnb-search')
 const gnbSearchInput = gnbSearch.querySelector('input')
 const gnbSearchHistory = gnbSearch.querySelector('.search-history')
+const gnbSearchHistoryList = gnbSearch.querySelector('ol')
+const deleteAllButton = gnbSearchHistory.querySelector(
+  '.search-history-header button'
+)
 
 function openGnbSearchHistory() {
+  if (gnbSearchHistoryList.children.length === 0) {
+    return
+  }
+
   if (!gnbSearchHistory.classList.contains('is-active')) {
     window.addEventListener('click', closeGnbSearchHistory)
   }
@@ -17,4 +25,11 @@ function closeGnbSearchHistory(e) {
   }
 }
 
+function deleteAllSearchHistoryItems() {
+  gnbSearchHistoryList.innerHTML = ''
+  gnbSearchHistory.classList.remove('is-active')
+}
+
 gnbSearchInput.addEventListener('focus', openGnbSearchHistory)
+
+deleteAllButton.addEventListener('click', deleteAllSearchHistoryItems)
