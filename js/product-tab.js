@@ -10,14 +10,20 @@ productTabButtonList.forEach((button) => {
 })
 
 let currentActiveTab = productTab.querySelector('.is-active')
+let disableUpdating = false
 
 function toggleActiveTab() {
   const tabItem = this.parentNode
 
   if (currentActiveTab !== tabItem) {
+    disableUpdating = true
     tabItem.classList.add('is-active')
     currentActiveTab.classList.remove('is-active')
     currentActiveTab = tabItem
+
+    setTimeout(() => {
+      disableUpdating = false
+    }, 1000)
   }
 }
 
@@ -53,17 +59,19 @@ const productTabPanelList = productTabPanelIdList.map((panelId) => {
 const productTabPanelPositionMap = {}
 
 function detectTabPanelPosition() {
-  // 각각의 tabPanel의 y축 윛치를 찾는다
-  // productTabPanelPositionMap에 그 값을 업데이트
-
   productTabPanelList.forEach((panel) => {
     const id = panel.getAttribute('id')
     const position = window.scrollY + panel.getBoundingClientRect().top
     productTabPanelPositionMap[id] = position
   })
+  updateActiveTabOnScroll()
 }
 
 function updateActiveTabOnScroll() {
+  if (disableUpdating) {
+    return
+  }
+
   const scrolledAmount =
     window.scrollY +
     (window.innerWidth >= 768 ? TOP_HEADER_DESKTOP + 80 : TOP_HEADER_MOBILE + 8)
@@ -81,12 +89,22 @@ function updateActiveTabOnScroll() {
     newActiveTab = productTabButtonList[0]
   }
 
+  const bodyHeight =
+    document.body.offsetHeight + (window.innerWidth < 1200 ? 56 : 0)
+
+  if (window.scrollY + window.innerHeight === bodyHeight) {
+    newActiveTab = productTabButtonList[4]
+  }
+
   if (newActiveTab) {
     newActiveTab = newActiveTab.parentNode
 
     if (newActiveTab !== currentActiveTab) {
       newActiveTab.classList.add('is-active')
-      currentActiveTab.classList.remove('is-active')
+
+      if (currentActiveTab !== null) {
+        currentActiveTab.classList.remove('is-active')
+      }
       currentActiveTab = newActiveTab
     }
   }
